@@ -23,6 +23,14 @@ aws.scan(params, function(err, data){
         console.log(data);
     }
 });
+
+aws.scanQ(params).then(
+    function(data){
+        console.log(data);
+    },
+    function(err){
+        console.log("Error found: " + err);
+    });
 ```
 
 # Features
