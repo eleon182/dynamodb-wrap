@@ -27,10 +27,9 @@ module.exports = {
 };
 
 function updateItem(params, callback) {
-    if(!params.key || !params.expression || !params.values || !params.table){
+    if (!params.key || !params.expression || !params.values || !params.table) {
         deferred.reject('Required parameters: key, expression, values, table');
-    }
-    else {
+    } else {
         var settings = {
             TableName: table,
             Key: key,
@@ -50,10 +49,9 @@ function updateItem(params, callback) {
 
 function updateItemQ(params) {
     var deferred = q.defer();
-    if(!params.key || !params.expression || !params.values || !params.table){
+    if (!params.key || !params.expression || !params.values || !params.table) {
         deferred.reject('Required parameters: key, expression, values, table');
-    }
-    else {
+    } else {
         var settings = {
             TableName: table,
             Key: key,
@@ -73,24 +71,24 @@ function updateItemQ(params) {
 }
 
 function query(params, callback) {
-    if(!params.table || !params.key){
+    if (!params.table || !params.key) {
         return callback('Required parameters: table, key');
     }
     var settings = {
         TableName: params.table,
         KeyConditions: params.key
-        //KeyConditions: {
-        //env: {
-        //ComparisonOperator: 'EQ',
-        //AttributeValueList: [{
-        //S: env
-        //}]
-        //}
-        //}
+            //KeyConditions: {
+            //env: {
+            //ComparisonOperator: 'EQ',
+            //AttributeValueList: [{
+            //S: env
+            //}]
+            //}
+            //}
     };
     db.query(settings, function(err, data) {
         if (err) {
-            callback(err,data);
+            callback(err, data);
         } else {
             dataHelper.removeKey(data.Items);
             callback(null, data.Items);
@@ -100,21 +98,20 @@ function query(params, callback) {
 
 function queryQ(params) {
     var deferred = q.defer();
-    if(!params.table || !params.key){
+    if (!params.table || !params.key) {
         deferred.reject('Required parameters: table, key');
-    }
-    else {
+    } else {
         var settings = {
             TableName: params.table,
             KeyConditions: params.key
-            //KeyConditions: {
-            //env: {
-            //ComparisonOperator: 'EQ',
-            //AttributeValueList: [{
-            //S: env
-            //}]
-            //}
-            //}
+                //KeyConditions: {
+                //env: {
+                //ComparisonOperator: 'EQ',
+                //AttributeValueList: [{
+                //S: env
+                //}]
+                //}
+                //}
         };
         db.query(settings, function(err, data) {
             if (err) {
@@ -129,11 +126,10 @@ function queryQ(params) {
 }
 
 function deleteItem(params, callback) {
-    if(!params.table || !params.key){
+    if (!params.table || !params.key) {
         callback('Required parameters: table, key');
-    }
-    else {
-        var settings= {
+    } else {
+        var settings = {
             TableName: params.table,
             Key: params.key
         };
@@ -150,11 +146,10 @@ function deleteItem(params, callback) {
 
 function deleteItemQ(params) {
     var deferred = q.defer();
-    if(!params.table || !params.key){
+    if (!params.table || !params.key) {
         deferred.reject('Required parameters: table, key');
-    }
-    else {
-        var settings= {
+    } else {
+        var settings = {
             TableName: params.table,
             Key: params.key
         };
@@ -172,10 +167,9 @@ function deleteItemQ(params) {
 
 function getItemQ(params) {
     var deferred = q.defer();
-    if(!params.table || !params.key){
+    if (!params.table || !params.key) {
         deferred.reject('Required parameters: table, key');
-    }
-    else {
+    } else {
         var settings = {
             TableName: params.table,
             Key: params.key
@@ -196,12 +190,12 @@ function getItemQ(params) {
     }
     return deferred.promise;
 }
+
 function getItem(params, callback) {
-    if(!params.table || !params.key){
+    if (!params.table || !params.key) {
         callback('Required parameters: table, key');
-    }
-    else {
-        var settings= {
+    } else {
+        var settings = {
             TableName: params.table,
             Key: params.key
         };
@@ -223,7 +217,7 @@ function getItem(params, callback) {
 
 function scanQ(params) {
     var deferred = q.defer();
-    if(!params.table){
+    if (!params.table) {
         deferred.reject('Required parameters: table');
     }
     var settings = {
@@ -232,41 +226,46 @@ function scanQ(params) {
     var response = [];
     var recurse = false;
 
-    async.doWhilst( function(callback){
-        db.scan(settings, function(err, data){
+    async.doWhilst(function(callback) {
+            db.scan(settings, function(err, data) {
+                if (err) {
+                    deferred.reject(err);
+                } else {
+                    dataHelper.removeKey(data.Items);
+                    buildArray(response, data.Items);
+
+                    if (!data.LastEvaluatedKey) {
+                        recurse = false;
+                        callback();
+                    } else {
+                        recurse = true;
+                        params.ExclusiveStartKey = data.LastEvaluatedKey;
+                        if (params.sleep) {
+                            setTimeout(function(){
+                                callback();
+                            }, 1500);
+                        } else {
+                            callback();
+                        }
+                    }
+                }
+            });
+        },
+        function() {
+            return recurse;
+        },
+        function(err) {
             if (err) {
                 deferred.reject(err);
             } else {
-                dataHelper.removeKey(data.Items);
-                buildArray(response, data.Items);
-
-                if(!data.LastEvaluatedKey){
-                    recurse = false;
-                    callback();
-                }
-                else {
-                    recurse = true;
-                    params.ExclusiveStartKey= data.LastEvaluatedKey;
-                    callback();
-                }
+                deferred.resolve(response);
             }
         });
-    },
-    function(){
-        return recurse;
-    },
-    function(err){
-        if(err){
-            deferred.reject(err);
-        }
-        else{
-            deferred.resolve(response);
-        }
-    });
     return deferred.promise;
 }
+
 function scan(params, mainCallback) {
-    if(!params.table){
+    if (!params.table) {
         return callback('Required parameters: table');
     }
     var settings = {
@@ -275,51 +274,54 @@ function scan(params, mainCallback) {
     var response = [];
     var recurse = false;
 
-    async.doWhilst( function(callback){
-        db.scan(settings, function(err, data){
+    async.doWhilst(function(callback) {
+            db.scan(settings, function(err, data) {
+                if (err) {
+                    mainCallback(err, response);
+                } else {
+                    dataHelper.removeKey(data.Items);
+                    buildArray(response, data.Items);
+
+                    if (!data.LastEvaluatedKey) {
+                        recurse = false;
+                        callback();
+                    } else {
+                        recurse = true;
+                        params.ExclusiveStartKey = data.LastEvaluatedKey;
+                        if (params.sleep) {
+                            setTimeout(function(){
+                                callback();
+                            }, 1500);
+                        } else {
+                            callback();
+                        }
+                    }
+                }
+            });
+        },
+        function() {
+            return recurse;
+        },
+        function(err) {
             if (err) {
                 mainCallback(err, response);
             } else {
-                dataHelper.removeKey(data.Items);
-                buildArray(response, data.Items);
-
-                if(!data.LastEvaluatedKey){
-                    recurse = false;
-                    callback();
-                }
-                else {
-                    recurse = true;
-                    params.ExclusiveStartKey= data.LastEvaluatedKey;
-                    callback();
-                }
+                mainCallback(null, response);
             }
         });
-    },
-    function(){
-        return recurse;
-    },
-    function(err){
-        if(err){
-            mainCallback(err, response);
-        }
-        else{
-            mainCallback(null, response);
-        }
-    });
 }
 
-function buildArray(array, newArray){
-    newArray.forEach(function(val){
+function buildArray(array, newArray) {
+    newArray.forEach(function(val) {
         array.push(val);
     });
 }
 
 function putItemQ(params) {
     var deferred = q.defer();
-    if(!params.table || !params.item){
+    if (!params.table || !params.item) {
         deferred.reject('Required parameters: table, item');
-    }
-    else {
+    } else {
         db.putItem({
             TableName: params.table,
             Item: params.item
@@ -336,10 +338,9 @@ function putItemQ(params) {
 }
 
 function putItem(params, callback) {
-    if(!params.table || !params.item){
+    if (!params.table || !params.item) {
         return callback('Required parameters: table, item');
-    }
-    else {
+    } else {
         db.putItem({
             TableName: params.table,
             Item: params.item
@@ -347,7 +348,7 @@ function putItem(params, callback) {
             if (err) {
                 callback(err, data);
             } else {
-                callback(null,data);
+                callback(null, data);
             }
 
         });
