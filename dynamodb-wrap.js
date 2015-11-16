@@ -223,6 +223,9 @@ function scanQ(params) {
     var settings = {
         TableName: params.table
     };
+    if(params.limit){
+        settings.Limit = params.limit;
+    }
     var response = [];
     var recurse = false;
 
@@ -271,6 +274,9 @@ function scan(params, mainCallback) {
     var settings = {
         TableName: params.table
     };
+    if(params.limit){
+        settings.Limit = params.limit;
+    }
     var response = [];
     var recurse = false;
 
