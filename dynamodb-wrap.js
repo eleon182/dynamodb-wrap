@@ -243,7 +243,7 @@ function scanQ(params) {
                         if (params.sleep) {
                             setTimeout(function(){
                                 callback();
-                            }, 1500);
+                            }, params.sleep);
                         } else {
                             callback();
                         }
@@ -291,7 +291,7 @@ function scan(params, mainCallback) {
                         if (params.sleep) {
                             setTimeout(function(){
                                 callback();
-                            }, 1500);
+                            }, params.sleep);
                         } else {
                             callback();
                         }
