@@ -223,7 +223,7 @@ function scanQ(params) {
     var settings = {
         TableName: params.table
     };
-    if(params.limit){
+    if (params.limit) {
         settings.Limit = params.limit;
     }
     var response = [];
@@ -234,7 +234,9 @@ function scanQ(params) {
                 if (err) {
                     deferred.reject(err);
                 } else {
-                    dataHelper.removeKey(data.Items);
+                    if (!params.raw) {
+                        dataHelper.removeKey(data.Items);
+                    }
                     buildArray(response, data.Items);
 
                     if (!data.LastEvaluatedKey) {
@@ -244,7 +246,7 @@ function scanQ(params) {
                         recurse = true;
                         params.ExclusiveStartKey = data.LastEvaluatedKey;
                         if (params.sleep) {
-                            setTimeout(function(){
+                            setTimeout(function() {
                                 callback();
                             }, params.sleep);
                         } else {
@@ -274,7 +276,7 @@ function scan(params, mainCallback) {
     var settings = {
         TableName: params.table
     };
-    if(params.limit){
+    if (params.limit) {
         settings.Limit = params.limit;
     }
     var response = [];
@@ -285,7 +287,9 @@ function scan(params, mainCallback) {
                 if (err) {
                     mainCallback(err, response);
                 } else {
-                    dataHelper.removeKey(data.Items);
+                    if (!params.raw) {
+                        dataHelper.removeKey(data.Items);
+                    }
                     buildArray(response, data.Items);
 
                     if (!data.LastEvaluatedKey) {
@@ -295,7 +299,7 @@ function scan(params, mainCallback) {
                         recurse = true;
                         params.ExclusiveStartKey = data.LastEvaluatedKey;
                         if (params.sleep) {
-                            setTimeout(function(){
+                            setTimeout(function() {
                                 callback();
                             }, params.sleep);
                         } else {
