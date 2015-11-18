@@ -244,7 +244,7 @@ function scanQ(params) {
                         callback();
                     } else {
                         recurse = true;
-                        params.ExclusiveStartKey = data.LastEvaluatedKey;
+                        settings.ExclusiveStartKey = data.LastEvaluatedKey;
                         if (params.sleep) {
                             setTimeout(function() {
                                 callback();
@@ -297,7 +297,7 @@ function scan(params, mainCallback) {
                         callback();
                     } else {
                         recurse = true;
-                        params.ExclusiveStartKey = data.LastEvaluatedKey;
+                        settings.ExclusiveStartKey = data.LastEvaluatedKey;
                         if (params.sleep) {
                             setTimeout(function() {
                                 callback();
