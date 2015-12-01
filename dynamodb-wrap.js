@@ -285,7 +285,7 @@ function scan(params, mainCallback) {
     async.doWhilst(function(callback) {
             db.scan(settings, function(err, data) {
                 if (err) {
-                    mainCallback(err, response);
+                    mainCallback(err, data);
                 } else {
                     if (!params.raw) {
                         dataHelper.removeKey(data.Items);
