@@ -12,6 +12,7 @@ var dataHelper = require('./helpers/dataHelper');
 var db = new AWS.DynamoDB();
 
 module.exports = {
+    describeTable: describeTable,
     scan: scan,
     scanQ: scanQ,
     getItem: getItem,
@@ -25,6 +26,14 @@ module.exports = {
     updateItemQ: updateItemQ,
     updateItem: updateItem
 };
+
+function describeTable(input, callback) {
+    var params = {
+        TableName: input.table
+    };
+
+    db.describeTable(params, callback);
+}
 
 function updateItem(params, callback) {
     if (!params.key || !params.expression || !params.values || !params.table) {
@@ -269,7 +278,27 @@ function scanQ(params) {
     return deferred.promise;
 }
 
-function scan(params, mainCallback) {
+function scan(params, callback){
+    describeTable(params, function(err, results){
+        if(err){
+            return callback(err,results);
+        }
+        if(results.Table.TableSizeBytes > 8000000){
+            params.maxReached = true;
+        }
+        scanHelper(params, function(err, results){
+            if(!err){
+                err = {};
+            }
+            if(params.maxReached){
+                err.maxReached = true;
+            }
+            callback(err, results);
+        });
+    });
+}
+
+function scanHelper(params, mainCallback) {
     if (!params.table) {
         return callback('Required parameters: table');
     }
@@ -292,7 +321,7 @@ function scan(params, mainCallback) {
                     }
                     buildArray(response, data.Items);
 
-                    if (!data.LastEvaluatedKey) {
+                    if (!data.LastEvaluatedKey || params.maxReached) {
                         recurse = false;
                         callback();
                     } else {
