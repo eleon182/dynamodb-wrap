@@ -287,12 +287,12 @@ function scan(params, callback) {
             params.maxReached = true;
         }
         scanHelper(params, function(err, results) {
-            if (params.maxReached) {
-                if (!err) {
-                    err = {};
-                }
-                err.maxReached = true;
-            }
+            //if (params.maxReached) {
+                //if (!err) {
+                    //err = {};
+                //}
+                //err.maxReached = true;
+            //}
             callback(err, results);
         });
     });
@@ -314,14 +314,18 @@ function scanHelper(params, mainCallback) {
     async.doWhilst(function(callback) {
             db.scan(settings, function(err, data) {
                 if (err) {
-                    mainCallback(err, data);
+                    recurse = false;
+                    callback({
+                        maxReached: true
+                    });
+                    //mainCallback(err, data);
                 } else {
                     if (!params.raw) {
                         dataHelper.removeKey(data.Items);
                     }
                     buildArray(response, data.Items);
 
-                    if (!data.LastEvaluatedKey || params.maxReached) {
+                    if (!data.LastEvaluatedKey) {
                         recurse = false;
                         callback();
                     } else {
@@ -342,11 +346,7 @@ function scanHelper(params, mainCallback) {
             return recurse;
         },
         function(err) {
-            if (err) {
-                mainCallback(err, response);
-            } else {
-                mainCallback(null, response);
-            }
+            mainCallback(err, response);
         });
 }
 
