@@ -1,6 +1,6 @@
 {
   "name": "dynamodb-wrap",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "AWS Dynamodb Wrapper",
   "main": "dynamodb-wrap.js",
   "author": "Esteban Leon",
