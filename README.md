@@ -58,7 +58,7 @@ vs
 - Key removal can be turned off by passing {raw: true} into the parameters.
 
 # API Documentation
-- To come!
+http://dynamodb-wrap-docs.s3-website-us-west-2.amazonaws.com/
 
 # GitHub
 https://github.com/eleon182/dynamodb-wrap
