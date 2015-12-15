@@ -61,6 +61,6 @@ vs
 [API documentation (JSDoc)](http://dynamodb-wrap-docs.s3-website-us-west-2.amazonaws.com/)
 
 # GitHub
-https://github.com/eleon182/dynamodb-wrap
+[Github dynamodb-wrap](https://github.com/eleon182/dynamodb-wrap)
 
 
