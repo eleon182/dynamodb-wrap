@@ -1,12 +1,12 @@
 {
   "name": "dynamodb-wrap",
-  "version": "0.0.13",
+  "version": "0.1.0",
   "description": "AWS Dynamodb Wrapper",
   "main": "dynamodb-wrap.js",
   "author": "Esteban Leon",
   "scripts": {
-      "jsdoc": "jsdoc -r -R ./README.md -d jsdoc dynamodb-wrap.js",
-      "deploy": "AWS_PROFILE=steve aws s3 sync jsdoc/. s3://dynamodb-wrap-docs"
+    "jsdoc": "jsdoc -r -R ./README.md -d jsdoc dynamodb-wrap.js",
+    "deploy": "AWS_PROFILE=steve aws s3 sync jsdoc/. s3://dynamodb-wrap-docs"
   },
   "dependencies": {
     "async": "^0.9.0",
