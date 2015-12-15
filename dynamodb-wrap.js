@@ -278,27 +278,27 @@ function scanQ(params) {
     return deferred.promise;
 }
 
-function scan(params, callback) {
-    describeTable(params, function(err, results) {
-        if (err) {
-            return callback(err, results);
-        }
-        if (results.Table.TableSizeBytes > 8000000) {
-            params.maxReached = true;
-        }
-        scanHelper(params, function(err, results) {
+//function scan(params, callback) {
+    //describeTable(params, function(err, results) {
+        //if (err) {
+            //return callback(err, results);
+        //}
+        //if (results.Table.TableSizeBytes > 8000000) {
+            //params.maxReached = true;
+        //}
+        //scanHelper(params, function(err, results) {
             //if (params.maxReached) {
                 //if (!err) {
                     //err = {};
                 //}
                 //err.maxReached = true;
             //}
-            callback(err, results);
-        });
-    });
-}
+            //callback(err, results);
+        //});
+    //});
+//}
 
-function scanHelper(params, mainCallback) {
+function scan(params, mainCallback) {
     if (!params.table) {
         return callback('Required parameters: table');
     }
