@@ -49,7 +49,7 @@ function initialize(params, callback) {
  */
 function describeTable(params, callback) {
     var settings = {
-        TableName: input.table
+        TableName: params.table
     };
 
     db.describeTable(settings, callback);
@@ -90,10 +90,10 @@ function updateItem(params, callback) {
         return callback('Required parameters: key, expression, values, table');
     }
     var settings = {
-        TableName: table,
-        Key: key,
-        UpdateExpression: expression,
-        ExpressionAttributeValues: values
+        TableName: params.table,
+        Key: params.key,
+        UpdateExpression: params.expression,
+        ExpressionAttributeValues: params.values
     };
 
     db.updateItem(settings, function(err, data) {
