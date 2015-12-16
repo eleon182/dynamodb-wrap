@@ -91,7 +91,7 @@ describe('updateItem', function() {
     });
 });
 
-ddescribe('query', function() {
+describe('query', function() {
     it('exists', function() {
         expect(test.query).toBeDefined();
     });
@@ -152,4 +152,29 @@ ddescribe('query', function() {
             next();
         });
     });
+});
+
+describe('scan', function(){
+    it('exists', function(){
+        expect(test.scan).toBeDefined();
+    });
+
+    it('bad input', function(next){
+        test.scan({table:'test-table'}, function(err,results){
+            expect(err).not.toBeNull();
+            expect(results.length).toBe(0);
+            next();
+        });
+    });
+
+    it('good input', function(next){
+        var table = 'AutomationLog';
+
+        test.scan({table:table}, function(err,results){
+            expect(err).not.toBeDefined();
+            expect(results.length > 0).toBe(true);
+            next();
+        });
+
+    })
 });

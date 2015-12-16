@@ -11,6 +11,8 @@ var dataHelper = require('./helpers/dataHelper');
 
 var db = new AWS.DynamoDB();
 
+var scanTimeLimit = 20000;
+
 module.exports = {
     describeTable: describeTable,
     initialize: initialize,
@@ -66,24 +68,24 @@ function describeTable(params, callback) {
  *
  * @example
  *  var table = 'table-name';
-    var key = {
+ var key = {
         username: {
             'S': params.username
         }
     };
-    var expression = "set password = :val1";
-    var values = {
+ var expression = "set password = :val1";
+ var values = {
         ':val1': {
             'S': bcrypt.hashSync(params.newPassword, 8)
         },
     };
-    var params = {
+ var params = {
       table: table,
       key: key,
       expression: expression,
       values: values
       };
-    db.updateItem(params, function(err, results(){});
+ db.updateItem(params, function(err, results(){});
  */
 function updateItem(params, callback) {
     if (!params.key || !params.expression || !params.values || !params.table) {
@@ -96,7 +98,7 @@ function updateItem(params, callback) {
         ExpressionAttributeValues: params.values
     };
 
-    db.updateItem(settings, function(err, data) {
+    db.updateItem(settings, function (err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -114,7 +116,7 @@ function updateItem(params, callback) {
  *
  * @example
  *  var table = 'table-name';
-    var key = {
+ var key = {
        customerId: {
           ComparisonOperator: 'EQ',
           AttributeValueList: [{
@@ -122,7 +124,7 @@ function updateItem(params, callback) {
           }]
        }
     }
-    db.query(params, function(err, results(){});
+ db.query(params, function(err, results(){});
  */
 function query(params, callback) {
     if (!params.table || !params.key) {
@@ -133,7 +135,7 @@ function query(params, callback) {
         TableName: params.table,
         KeyConditions: params.key
     };
-    db.query(settings, function(err, data) {
+    db.query(settings, function (err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -154,12 +156,12 @@ function query(params, callback) {
  *
  * @example
  *  var table = 'table-name';
-    var key = {
+ var key = {
         username: {
             'S': 'steve'
         }
     };
-    db.deleteItem(params, function(err, results(){});
+ db.deleteItem(params, function(err, results(){});
  */
 function deleteItem(params, callback) {
     if (!params.table || !params.key) {
@@ -170,7 +172,7 @@ function deleteItem(params, callback) {
         Key: params.key
     };
 
-    db.deleteItem(settings, function(err, data) {
+    db.deleteItem(settings, function (err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -188,12 +190,12 @@ function deleteItem(params, callback) {
  *
  * @example
  *  var table = 'table-name';
-    var key = {
+ var key = {
         username: {
             'S': 'steve'
         }
     };
-    db.getItem(params, function(err, results(){});
+ db.getItem(params, function(err, results(){});
  */
 function getItem(params, callback) {
     if (!params.table || !params.key) {
@@ -204,7 +206,7 @@ function getItem(params, callback) {
         Key: params.key
     };
 
-    db.getItem(settings, function(err, data) {
+    db.getItem(settings, function (err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -230,9 +232,10 @@ function getItem(params, callback) {
  *
  * @example
  *  var table = 'table-name';
-    db.scan({table: table}, function(err, results(){});
+ db.scan({table: table}, function(err, results(){});
  */
 function scan(params, mainCallback) {
+    var start = new Date().getTime();
     if (!params.table) {
         return callback('Required parameters: table');
     }
@@ -245,8 +248,8 @@ function scan(params, mainCallback) {
     var response = [];
     var recurse = false;
 
-    async.doWhilst(function(callback) {
-            db.scan(settings, function(err, data) {
+    async.doWhilst(function (callback) {
+            db.scan(settings, function (err, data) {
                 if (err) {
                     recurse = false;
                     callback({
@@ -263,10 +266,15 @@ function scan(params, mainCallback) {
                         recurse = false;
                         callback();
                     } else {
-                        recurse = true;
+                        if (new Date().getTime() - start < scanTimeLimit) {
+                            recurse = true;
+                        }
+                        else {
+                            recurse = false;
+                        }
                         settings.ExclusiveStartKey = data.LastEvaluatedKey;
                         if (params.sleep) {
-                            setTimeout(function() {
+                            setTimeout(function () {
                                 callback();
                             }, params.sleep);
                         } else {
@@ -276,16 +284,16 @@ function scan(params, mainCallback) {
                 }
             });
         },
-        function() {
+        function () {
             return recurse;
         },
-        function(err) {
+        function (err) {
             mainCallback(err, response);
         });
 }
 
 function buildArray(array, newArray) {
-    newArray.forEach(function(val) {
+    newArray.forEach(function (val) {
         array.push(val);
     });
 }
@@ -298,8 +306,8 @@ function buildArray(array, newArray) {
  * @param {function} callback callback callback function
  *
  * @example
-   var table = 'table-name';
-    var item = {
+ var table = 'table-name';
+ var item = {
         username: {
             'S': data.username
         },
@@ -307,11 +315,11 @@ function buildArray(array, newArray) {
             'S': new Date().toString()
         },
     };
-    var params = {
+ var params = {
         table: table,
         key: item
     };
-    db.putItem(params, function(err,results){});
+ db.putItem(params, function(err,results){});
  */
 function putItem(params, callback) {
     if (!params.table || !params.item) {
@@ -320,7 +328,7 @@ function putItem(params, callback) {
     db.putItem({
         TableName: params.table,
         Item: params.item
-    }, function(err, data) {
+    }, function (err, data) {
         if (err) {
             callback(err, data);
         } else {
