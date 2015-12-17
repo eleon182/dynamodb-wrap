@@ -110,7 +110,7 @@ function updateItem(params, callback) {
 /**
  * query - query items from the table.
  *
- * @param {string} table table name
+ * @param {string} table table name~
  * @param {object} key keys to query
  * @param {function} callback callback callback function
  *

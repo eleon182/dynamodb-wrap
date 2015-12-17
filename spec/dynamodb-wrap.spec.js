@@ -178,3 +178,40 @@ describe('scan', function(){
 
     })
 });
+
+describe('putItem', function(){
+    it('exists', function(){
+        expect(test.putItem).toBeDefined();
+    });
+
+    it('bad input', function(next){
+        test.putItem({table:'test'}, function(err, results){
+            expect(err).toBeDefined();
+            expect(results).not.toBeDefined();
+            next();
+        });
+    });
+
+    it('good input', function(next){
+        var table = 'mytest';
+        var item = {
+            testid: {
+                'S': '2'
+            },
+            date: {
+                'S': new Date().getTime().toString()
+            },
+        };
+        var params = {
+            table: table,
+            item: item
+        };
+
+        test.putItem(params, function(err, results){
+            console.log(err,results);
+            expect(err).toBeNull();
+            expect(results).toBeDefined();
+            next();
+        })
+    });
+});

@@ -1,29 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="GradleLocalSettings">
-    <option name="modificationStamps">
-      <map>
-        <entry key="$USER_HOME$/ideaprojects/corvette-common-javalib" value="2895620330000" />
-        <entry key="$USER_HOME$/ideaprojects/corvette-fulfillment" value="1449093841000" />
-        <entry key="$USER_HOME$/ideaprojects/corvette-idverify" value="2895635270000" />
-        <entry key="$USER_HOME$/ideaprojects/corvette-login" value="2893726046000" />
-        <entry key="$USER_HOME$/ideaprojects/corvette-prequal" value="1446658955000" />
-        <entry key="$USER_HOME$/ideaprojects/corvette-salesforce" value="1447097488000" />
-        <entry key="$USER_HOME$/ideaprojects/corvette-uiprofile" value="1447981247000" />
-        <entry key="$USER_HOME$/ideaprojects/test" value="1447116696000" />
-      </map>
-    </option>
-    <option name="externalProjectsViewState">
-      <projects_view />
-    </option>
-  </component>
-  <component name="MavenImportPreferences">
-    <option name="generalSettings">
-      <MavenGeneralSettings>
-        <option name="mavenHome" value="Bundled (Maven 3)" />
-      </MavenGeneralSettings>
-    </option>
-  </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
     <OptionsSetting value="true" id="Remove" />
