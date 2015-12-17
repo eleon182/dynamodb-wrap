@@ -5,8 +5,7 @@
   "main": "dynamodb-wrap.js",
   "author": "Esteban Leon",
   "scripts": {
-    "jsdoc": "jsdoc -r -R ./README.md -d jsdoc dynamodb-wrap.js",
-    "deploy": "AWS_PROFILE=steve-root aws s3 sync jsdoc/. s3://dynamodb-wrap-docs",
+    "jsdoc": "jsdoc -r -R ./README.md -d jsdoc dynamodb-wrap.js && aws s3 sync jsdoc/. s3://dynamodb-wrap-docs --profile steve-root",
     "test": "jasmine-node --autotest --color --verbose spec",
     "coverage": "istanbul cover jasmine-node spec"
   },
