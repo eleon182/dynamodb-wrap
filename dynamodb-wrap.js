@@ -112,6 +112,7 @@ function updateItem(params, callback) {
  *
  * @param {string} table table name~
  * @param {object} key keys to query
+ * @param {object} index index to use
  * @param {function} callback callback callback function
  *
  * @example
@@ -135,6 +136,9 @@ function query(params, callback) {
         TableName: params.table,
         KeyConditions: params.key
     };
+    if(params.index){
+        settings.IndexName = params.index;
+    }
     db.query(settings, function (err, data) {
         if (err) {
             callback(err, data);
@@ -260,7 +264,8 @@ function scan(params, mainCallback) {
                     if (!params.raw) {
                         dataHelper.removeKey(data.Items);
                     }
-                    buildArray(response, data.Items);
+                    //buildArray(response, data.Items);
+                    response = lo.union(response, data.Items);
 
                     if (!data.LastEvaluatedKey) {
                         recurse = false;

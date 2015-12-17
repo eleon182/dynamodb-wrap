@@ -5,11 +5,7 @@ function removeKey(data) {
         removeIndividualKey(data);
     } else {
         data.forEach(function(outer) {
-            for (var key in outer) {
-                for (var innerKey in outer[key]) {
-                    outer[key] = outer[key][innerKey];
-                }
-            }
+            removeIndividualKey(outer);
         });
     }
 }
