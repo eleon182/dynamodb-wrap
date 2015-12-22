@@ -11,7 +11,7 @@ var dataHelper = require('./helpers/dataHelper');
 
 var db = new AWS.DynamoDB();
 
-var scanTimeLimit = 10000;
+var scanTimeLimitDefault = 10000;
 
 module.exports = {
     describeTable: describeTable,
@@ -239,6 +239,7 @@ function getItem(params, callback) {
  db.scan({table: table}, function(err, results(){});
  */
 function scan(params, mainCallback) {
+    var scanTimeLimit = params.scanTimeLimit || scanTimeLimitDefault;
     var start = new Date().getTime();
     if (!params.table) {
         return callback('Required parameters: table');
