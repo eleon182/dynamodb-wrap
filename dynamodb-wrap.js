@@ -11,7 +11,7 @@ var dataHelper = require('./helpers/dataHelper');
 
 var db = new AWS.DynamoDB();
 
-var scanTimeLimit = 20000;
+var scanTimeLimit = 10000;
 
 module.exports = {
     describeTable: describeTable,
@@ -112,7 +112,7 @@ function updateItem(params, callback) {
  *
  * @param {string} table table name~
  * @param {object} key keys to query
- * @param {object} index index to use
+ * @param {object} [index=null] index to use
  * @param {function} callback callback callback function
  *
  * @example
@@ -276,6 +276,10 @@ function scan(params, mainCallback) {
                         }
                         else {
                             recurse = false;
+                            callback({
+                                error: 'Max pagination reached',
+                                maxReached: true
+                            });
                         }
                         settings.ExclusiveStartKey = data.LastEvaluatedKey;
                         if (params.sleep) {

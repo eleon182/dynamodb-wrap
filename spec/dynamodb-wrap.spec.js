@@ -1,3 +1,4 @@
+jasmine.getEnv().defaultTimeoutInterval = 30000;
 var test = require('../dynamodb-wrap.js');
 
 describe('initialize', function() {
@@ -167,16 +168,17 @@ describe('scan', function(){
         });
     });
 
-    it('good input', function(next){
-        var table = 'AutomationLog';
+    iit('good input', function(next){
+        var table = 'fulfillment-integration-data-1437263385-Subscription-1D73666U0Q021';
 
         test.scan({table:table}, function(err,results){
+            console.log(results.length);
             expect(err).not.toBeDefined();
             expect(results.length > 0).toBe(true);
             next();
         });
 
-    })
+    });
 });
 
 describe('putItem', function(){
