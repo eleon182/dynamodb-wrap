@@ -98,7 +98,7 @@ function updateItem(params, callback) {
         ExpressionAttributeValues: params.values
     };
 
-    db.updateItem(settings, function (err, data) {
+    db.updateItem(settings, function(err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -136,10 +136,10 @@ function query(params, callback) {
         TableName: params.table,
         KeyConditions: params.key
     };
-    if(params.index){
+    if (params.index) {
         settings.IndexName = params.index;
     }
-    db.query(settings, function (err, data) {
+    db.query(settings, function(err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -176,7 +176,7 @@ function deleteItem(params, callback) {
         Key: params.key
     };
 
-    db.deleteItem(settings, function (err, data) {
+    db.deleteItem(settings, function(err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -210,7 +210,7 @@ function getItem(params, callback) {
         Key: params.key
     };
 
-    db.getItem(settings, function (err, data) {
+    db.getItem(settings, function(err, data) {
         if (err) {
             callback(err, data);
         } else {
@@ -253,8 +253,8 @@ function scan(params, mainCallback) {
     var response = [];
     var recurse = false;
 
-    async.doWhilst(function (callback) {
-            db.scan(settings, function (err, data) {
+    async.doWhilst(function(callback) {
+            db.scan(settings, function(err, data) {
                 if (err) {
                     recurse = false;
                     callback({
@@ -274,17 +274,16 @@ function scan(params, mainCallback) {
                     } else {
                         if (new Date().getTime() - start < scanTimeLimit) {
                             recurse = true;
-                        }
-                        else {
+                        } else {
                             recurse = false;
-                            callback({
+                            return callback({
                                 error: 'Max pagination reached',
                                 maxReached: true
                             });
                         }
                         settings.ExclusiveStartKey = data.LastEvaluatedKey;
                         if (params.sleep) {
-                            setTimeout(function () {
+                            setTimeout(function() {
                                 callback();
                             }, params.sleep);
                         } else {
@@ -294,16 +293,16 @@ function scan(params, mainCallback) {
                 }
             });
         },
-        function () {
+        function() {
             return recurse;
         },
-        function (err) {
+        function(err) {
             mainCallback(err, response);
         });
 }
 
 function buildArray(array, newArray) {
-    newArray.forEach(function (val) {
+    newArray.forEach(function(val) {
         array.push(val);
     });
 }
@@ -338,7 +337,7 @@ function putItem(params, callback) {
     db.putItem({
         TableName: params.table,
         Item: params.item
-    }, function (err, data) {
+    }, function(err, data) {
         if (err) {
             callback(err, data);
         } else {
