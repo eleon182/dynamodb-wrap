@@ -10,12 +10,11 @@ Be sure to have your AWS credentials in the ~/.aws/credentials file
 # Usage
 ```
 var aws = require('dynamodb-wrap');
+
 aws.initialize({region: 'us-west-2'});
 
 var params = {
-    table: 'my-table-name',
-    raw: true,   // does not parse out the data types with response
-    sleep: 2000  // number of ms in between pagination calls (prevents exceeding the table throughput)
+    table: 'my-table-name'
 };
 
 aws.scan(params, function(err, data){
@@ -27,7 +26,6 @@ aws.scan(params, function(err, data){
 });
 
 ```
-
 # Features
 - Automated pagination. Scan implements full scan which will pull all table data. (Up to table throughput limits).
 - If throughput is exceeded, the response will include a flag "maxReached" to indicate that not all items were retrieved.
