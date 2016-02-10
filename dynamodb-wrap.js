@@ -242,7 +242,7 @@ function scan(params, mainCallback) {
     var scanTimeLimit = params.scanTimeLimit || scanTimeLimitDefault;
     var start = new Date().getTime();
     if (!params.table) {
-        return callback('Required parameters: table');
+        return mainCallback('Required parameters: table');
     }
     var settings = {
         TableName: params.table
