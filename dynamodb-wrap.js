@@ -232,6 +232,7 @@ function getItem(params, callback) {
  * @param {string} table table name
  * @param {boolean} [raw=false] if true, prevents removing the data types from the response
  * @param {number} [sleep=false] sets a sleep timer between pagination calls
+ * @param {number} [scanTimeLimit=false] sets the number of max ms that is allowed for the entire scan to finish. (default: 10000, set to 0 for none)
  * @param {function} callback callback callback function
  *
  * @example
@@ -272,7 +273,7 @@ function scan(params, mainCallback) {
                         recurse = false;
                         callback();
                     } else {
-                        if (new Date().getTime() - start < scanTimeLimit) {
+                        if (scanTimeLimit === 0 || new Date().getTime() - start < scanTimeLimit) {
                             recurse = true;
                         } else {
                             recurse = false;
